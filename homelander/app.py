@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-import cv2
+
 import os
 import requests
 import base64
@@ -9,8 +9,7 @@ load_dotenv()  # Load environment variables from .env file
 
 app = Flask(__name__)
 
-# Set up the camera
-camera = cv2.VideoCapture(0)
+
 
 @app.route('/')
 def index():
