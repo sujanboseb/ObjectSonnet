@@ -3,6 +3,9 @@ import cv2
 import os
 import requests
 import base64
+from dotenv import load_dotenv
+
+load_dotenv()  # Load environment variables from .env file
 
 app = Flask(__name__)
 
@@ -42,7 +45,7 @@ def process_image_link():
 
 def query_detr(filename):
     API_URL_DETR = "https://api-inference.huggingface.co/models/facebook/detr-resnet-50"
-    API_KEY_DETR = "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"  # Replace with your actual API key for DETR
+    API_KEY_DETR = os.getenv("DETR_API_KEY")  # Replace with your actual environment variable name
     headers_detr = {"Authorization": f"Bearer {API_KEY_DETR}"}
 
     with open(filename, "rb") as f:
@@ -58,7 +61,7 @@ def generate_poem(labels):
 
     # Use the combined sentence as input for the poem generator
     POEM_API_URL = "https://api-inference.huggingface.co/models/felixhusen/poem"
-    POEM_API_KEY = "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"  # Replace with your actual API key for the poem generator
+    POEM_API_KEY = os.getenv("POEM_API_KEY")  # Replace with your actual environment variable name
     POEM_HEADERS = {"Authorization": f"Bearer {POEM_API_KEY}"}
 
     poem_payload = {"inputs": sentence}
