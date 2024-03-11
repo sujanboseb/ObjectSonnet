@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 import cv2
 import os
 import requests
@@ -7,9 +7,7 @@ import base64
 app = Flask(__name__)
 
 # Set up the camera
-
-
-# Set up environment variables
+camera = cv2.VideoCapture(0)
 DETR_API_KEY = os.environ.get("DETR_API_KEY")
 POEM_API_KEY = os.environ.get("POEM_API_KEY")
 
@@ -22,21 +20,37 @@ def process_image_link():
     # Get image link from the form
     image_link = request.form['image_link']
 
-    # ... (rest of your code)
+    # Check if the image link is in base64 format
+    if image_link.startswith('data:image'):
+        # Extract base64-encoded image data
+        _, encoded_data = image_link.split(',')
+        decoded_data = base64.b64decode(encoded_data)
 
+        # Save the decoded image
+        image_path = 'uploads/image_from_link.jpg'
+        with open(image_path, 'wb') as f:
+            f.write(decoded_data)
+    else:
+        # If it's a regular URL, download the image
+        response = requests.get(image_link)
+        image_path = 'uploads/image_from_link.jpg'
+        with open(image_path, 'wb') as f:
+            f.write(response.content)
+    
     output = generate_output(image_path)
     
     # Return a JSON response with both labels and poem_generated
     return render_template('result.html', response=output)
 
 def query_detr(filename):
-    API_URL_DETR = "https://api-inference.huggingface.co/models/facebook/detr-resnet-50"
+   API_URL_DETR = "https://api-inference.huggingface.co/models/facebook/detr-resnet-50"
     headers_detr = {"Authorization": f"Bearer {DETR_API_KEY}"}
 
     with open(filename, "rb") as f:
         data = f.read()
     response = requests.post(API_URL_DETR, headers=headers_detr, data=data)
     return response.json()
+
 
 # ...
 
@@ -54,7 +68,7 @@ def generate_poem(labels):
     # Process the poem_response.json() list
     poem_generated = " ".join(item.get('generated_text', 'Poem generation failed') for item in poem_response.json() if isinstance(item, dict))
 
-    return { 'poem_generated': poem_generated}
+    return {'poem_generated': poem_generated}
 
 # ...
 
