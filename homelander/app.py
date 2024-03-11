@@ -7,7 +7,7 @@ import base64
 app = Flask(__name__)
 
 # Set up the camera
-camera = cv2.VideoCapture(0)
+
 
 # Set up environment variables
 DETR_API_KEY = os.environ.get("DETR_API_KEY")
