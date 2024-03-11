@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-import cv2
+
 import os
 import requests
 import base64
@@ -7,7 +7,7 @@ import base64
 app = Flask(__name__)
 
 # Set up the camera
-camera = cv2.VideoCapture(0)
+
 DETR_API_KEY = os.environ.get("DETR_API_KEY")
 POEM_API_KEY = os.environ.get("POEM_API_KEY")
 
