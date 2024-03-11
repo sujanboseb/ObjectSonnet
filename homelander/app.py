@@ -43,7 +43,7 @@ def process_image_link():
     return render_template('result.html', response=output)
 
 def query_detr(filename):
-   API_URL_DETR = "https://api-inference.huggingface.co/models/facebook/detr-resnet-50"
+    API_URL_DETR = "https://api-inference.huggingface.co/models/facebook/detr-resnet-50"
     headers_detr = {"Authorization": f"Bearer {DETR_API_KEY}"}
 
     with open(filename, "rb") as f:
